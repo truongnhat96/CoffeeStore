@@ -1,0 +1,139 @@
+﻿<Window x:Class="GUI.Views.Drink"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Quản lý đồ uống" Height="680" Width="900">
+    <!-- Kích hoạt hiệu ứng Material Design cho cửa sổ -->
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="materialDesign:ColorZoneAssist.Mode" Value="PrimaryDark" />
+        </Style>
+    </Window.Style>
+
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- CỘT TRÁI: DANH SÁCH & CÁC NÚT CHỨC NĂNG -->
+        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+            <!-- Thanh chứa các nút -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <Button Content="Thêm"
+                        Name="btnAdd"
+                        Click="btnAdd_Click"
+                        Margin="0,0,8,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+                <Button Content="Xoá"
+                        Name="btnDelete"
+                        Click="btnDelete_Click"
+                        Margin="0,0,8,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+                <Button Content="Sửa"
+                        Name="btnEdit"
+                        Click="btnEdit_Click"
+                        Margin="0,0,8,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                <Button Content="Xem"
+                        Name="btnView"
+                        Click="btnView_Click"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+            </StackPanel>
+
+            <!-- DataGrid hiển thị danh sách đồ uống -->
+            <materialDesign:Card>
+                <DataGrid ItemsSource="{Binding Drinks}"
+                          SelectedItem="{Binding SelectedDrink, Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          Name="dtgDrinks"
+                          SelectionMode="Single"
+                          CanUserAddRows="False"
+                          MaxHeight="580"
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          IsReadOnly="True"
+                          Style="{StaticResource MaterialDesignDataGrid}"
+                          materialDesign:DataGridAssist.CellPadding="8"
+                          materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="*" />
+                        <DataGridTextColumn Header="Tên đồ" Binding="{Binding Name}" Width="2*" />
+                        <DataGridTextColumn Header="Danh mục" Binding="{Binding CategoryName}" Width="2*" />
+                        <DataGridTextColumn Header="Giá tiền" Binding="{Binding Price}" Width="*" />
+                        <DataGridTextColumn Visibility="Hidden" Header="Url hình ảnh" Binding="{Binding ImagePath}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </materialDesign:Card>
+        </StackPanel>
+
+        <!-- CỘT PHẢI: KHU VỰC TÌM KIẾM VÀ NHẬP THÔNG TIN -->
+        <StackPanel Grid.Column="1">
+            <!-- TextBox tìm kiếm -->
+            <Grid Margin="0,0,0,16">
+                <TextBox x:Name="txtSearch"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Tìm kiếm đồ uống..." />
+                <Button Background="Transparent"
+                        BorderThickness="0"
+                        Name="btnSearch"
+                        Click="btnSearch_Click"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0,0,4,0">
+                    <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="Black"/>
+                </Button>
+            </Grid>
+
+            <!-- Khu vực nhập thông tin -->
+            <StackPanel Orientation="Vertical" Margin="0,0,0,16">
+                <TextBlock Text="ID" Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                         Text="{Binding SelectedDrink.Id, Mode=TwoWay}"
+                         Name="txtId"
+                         IsEnabled="False" />
+
+                <TextBlock Text="Tên" Margin="0,8,0,0"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <TextBox x:Name="txtName"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                         Text="{Binding SelectedDrink.Name, Mode=TwoWay}" />
+
+                <TextBlock Text="Danh mục" Margin="0,8,0,0"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <!-- Binding SelectedItem của combobox đến SelectedCategory -->
+                <ComboBox x:Name="cbCategory"
+                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                          ItemsSource="{Binding Categories}"
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
+
+                <TextBlock Text="Giá tiền" Margin="0,8,0,0"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <xctk:DoubleUpDown x:Name="numPrice" 
+                                   FontSize="15"
+                                   TextAlignment="Left"
+                                   Increment="1000"
+                                   Value="{Binding SelectedDrink.Price, Mode=TwoWay}" />
+
+                <TextBlock Text="Hình ảnh (url)" Margin="0,8,0,0"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         Name="txtImageUrl"
+                         Text="{Binding SelectedDrink.ImagePath, Mode=TwoWay}"/>
+                <Button Content="Upload ảnh"
+                        x:Name="btnUploadImage"
+                        FontSize="16"
+                        Margin="0,18,0,10"
+                        Width="120"
+                        Click="btnUploadImage_Click" />
+            </StackPanel>
+
+            <!-- CHÚ Ý -->
+            <TextBlock Text="CHÚ Ý" FontWeight="Bold" Foreground="Red" />
+            <TextBlock Text="Hãy chọn 1 mục trong danh sách để Xoá/Sửa tuỳ ý"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+    </Grid>
+</Window>

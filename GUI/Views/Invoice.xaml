@@ -1,0 +1,132 @@
+﻿<Window x:Class="GUI.Views.Invoice"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:GUI.ViewModels.Helper"
+        Title="Thống kê doanh thu"
+        Width="900" Height="600"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource MaterialDesignPaper}">
+
+    <!-- Để sử dụng kiểu Material Design cho toàn bộ window -->
+    <Window.Resources>
+        <local:EqualityConverter x:Key="EqualityConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="*"/>
+            <!-- Body (DataGrid) -->
+            <RowDefinition Height="Auto"/>
+            <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <StackPanel Orientation="Horizontal" 
+                    VerticalAlignment="Center"
+                    Margin="0 0 0 16">
+            <!-- Phần chọn tháng/năm (có thể thay bằng DatePicker tuỳ ý) -->
+            <StackPanel Orientation="Horizontal" Margin="0 0 24 0" VerticalAlignment="Center">
+                <TextBlock Text="Từ:" VerticalAlignment="Center" 
+                           Margin="0 0 8 0"
+                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+                <!-- ComboBox hoặc DatePicker cho Tháng/Năm -->
+                <DatePicker Width="120"
+                            Name="dpFrom"
+                            SelectedDate="{Binding FromDate}"
+                            Style="{StaticResource MaterialDesignDatePicker}" />
+                <TextBlock Text="đến:" VerticalAlignment="Center" 
+                           Margin="16 0 8 0"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <DatePicker Width="120"
+                            Name="dpTo"
+                            SelectedDate="{Binding ToDate}"
+                            Style="{StaticResource MaterialDesignDatePicker}" />
+            </StackPanel>
+
+            <!-- Nút Tìm kiếm & Thống kê -->
+            <Button Name="btnSearch"
+                    Content="Tìm kiếm"
+                    Margin="0 0 0 0"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Command="{Binding SearchCommand}"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="{Binding IsSearching}" 
+                    materialDesign:ButtonProgressAssist.Value="{Binding ProgressValue}"
+                    materialDesign:ButtonProgressAssist.Maximum="100"
+                    />
+        </StackPanel>
+
+        <!-- BODY: DataGrid hiển thị danh sách -->
+        <materialDesign:Card Grid.Row="1" Padding="8" 
+                             Background="{DynamicResource MaterialDesignPaper}">
+            <DataGrid ItemsSource="{Binding InvoiceList}"
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      Style="{StaticResource MaterialDesignDataGrid}"
+                      CanUserAddRows="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="*" />
+                    <DataGridTextColumn Header="Tên bàn" Binding="{Binding TableName}" Width="2*" />
+                    <DataGridTextColumn Header="Ngày tạo hóa đơn" Binding="{Binding TimeCheckIn}" Width="2*" />
+                    <DataGridTextColumn Header="Ngày xuất hóa đơn" Binding="{Binding TimeCheckOut}" Width="2*" />
+                    <DataGridTextColumn Header="Giảm giá" Binding="{Binding Discount}" Width="1.5*" />
+                    <DataGridTextColumn Header="Thành tiền" Binding="{Binding Totalprice}" Width="2*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </materialDesign:Card>
+
+        <!-- FOOTER -->
+        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0 16 0 0">
+            <!-- Hiển thị Tổng doanh thu ... -->
+            <TextBlock Text="{Binding TotalRevenue, StringFormat='Tổng doanh thu: {0:N0} đ'}"
+                       FontSize="18"
+                       Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Right"
+                       Margin="0 0 0 8"/>
+
+            <!-- Phân trang với ItemsControl -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <ItemsControl ItemsSource="{Binding PageNumbers}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding}"
+                                    Margin="4"
+                                    Command="{Binding DataContext.SelectPageCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                        <!-- Màu mặc định -->
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True">
+                                                <DataTrigger.Binding>
+                                                    <MultiBinding Converter="{StaticResource EqualityConverter}">
+                                                        <!-- Giá trị của nút hiện tại (page number) -->
+                                                        <Binding Path="." />
+                                                        <!-- Giá trị SelectedPage từ ViewModel -->
+                                                        <Binding Path="DataContext.SelectedPage" RelativeSource="{RelativeSource AncestorType=Window}" />
+                                                    </MultiBinding>
+                                                </DataTrigger.Binding>
+                                                <!-- Khi số trang bằng với SelectedPage, đổi màu nền -->
+                                                <Setter Property="Background" Value="Green"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

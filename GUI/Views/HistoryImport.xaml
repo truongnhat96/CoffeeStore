@@ -1,0 +1,35 @@
+﻿<Window x:Class="GUI.Views.HistoryImport"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:GUI.Views"
+        mc:Ignorable="d"
+        Title="HistoryImport" Height="450" Width="800">
+    <Grid>
+        <materialDesign:Card ScrollViewer.CanContentScroll="True">
+            <!-- DataGrid hiển thị danh sách sản phẩm -->
+            <DataGrid ItemsSource="{Binding ProductsImported}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      ScrollViewer.CanContentScroll="True" 
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Margin="0,0,10,0"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      Style="{StaticResource MaterialDesignDataGrid}"
+                      materialDesign:DataGridAssist.CellPadding="8"
+                      materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Tên Sản Phẩm" Binding="{Binding ProductName}" Width="2*" />
+                    <DataGridTextColumn Header="Số Lượng" Binding="{Binding Quantity}" Width="*" />
+                    <DataGridTextColumn Header="Đơn Vị" Binding="{Binding Unit}" Width="*" />
+                    <DataGridTextColumn Header="Giá Tiền" Binding="{Binding Price}" Width="1.3*" />
+                    <DataGridTextColumn Header="Ngày Nhập Hàng" Binding="{Binding Import, StringFormat=\{0:dd/MM/yyyy\}}" Width="1.5*" />
+                    <DataGridTextColumn Header="Người Nhập Hàng" Binding="{Binding DisplayName}" Width="2*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </materialDesign:Card>
+    </Grid>
+</Window>

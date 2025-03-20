@@ -1,0 +1,173 @@
+﻿<Window x:Class="GUI.Views.Storage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Quản Lý Kho" Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen">
+
+    <!-- Định nghĩa theme Material -->
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"/>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}"/>
+        <Style TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignOutlinedDatePicker}"/>
+    </Window.Resources>
+
+    <Grid>
+        <!-- 2 cột chính: cột trái cho menu, cột phải cho nội dung -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <!-- Menu trái -->
+            <ColumnDefinition Width="*" />
+            <!-- Nội dung phải -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Panel bên trái (Menu) -->
+        <Border Background="{DynamicResource MaterialDesignPaper}" Padding="10">
+            <Grid Grid.Column="0" Background="#EEE">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Nút chức năng -->
+                    <RowDefinition Height="*" />
+                    <!-- Khoảng trống giãn -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Tổng tiền -->
+                </Grid.RowDefinitions>
+
+                <!-- Vùng chức năng -->
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="CHỨC NĂNG" FontWeight="Bold" Margin="0,0,0,20"/>
+                    <Button Content="Sửa Thông Tin Sản Phẩm" Click="EditProductButton_Click" Margin="0,0,0,15"/>
+                    <Button Content="Xóa Sản Phẩm" Click="DeleteProductButton_Click" Margin="0,0,0,15"/>
+                    <Button Content="Lịch Sử Nhập Hàng" Click="HistoryButton_Click" Margin="0,0,0,15"/>
+                </StackPanel>
+
+                <!-- Khu vực Tổng tiền -->
+                <StackPanel Grid.Row="2" Orientation="Vertical">
+                    <TextBlock Text="Tổng Tiền Hàng:"
+                               Style="{StaticResource MaterialDesignBody2TextBlock}"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Margin="0,0,0,5" />
+                    <TextBox Width="200"
+                             TextAlignment="Center"
+                             FontSize="17"
+                             FontWeight="Bold"
+                             Style="{StaticResource MaterialDesignFilledTextBox}"
+                             IsReadOnly="True"
+                             Text="{Binding TotalPrice, Mode=OneWay, StringFormat=' {0:N0} VNĐ'}"
+                             Margin="0,0,0,10"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <!-- Khu vực nội dung (bên phải) -->
+        <Grid Grid.Column="1" Margin="10">
+            <!-- 2 hàng: 
+                 - Hàng 1 (Auto) hiển thị tiêu đề 
+                 - Hàng 2 (*) chứa DataGrid và Thông tin chi tiết bên cạnh nhau -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Tiêu đề -->
+            <TextBlock Text="Danh Sách Sản Phẩm" 
+                       FontWeight="Bold" 
+                       FontSize="16" 
+                       Margin="0,0,0,10"
+                       Grid.Row="0"/>
+
+            <!-- Hàng 2: DataGrid (cột trái) + Thông tin (cột phải) -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="11*" />
+                    <ColumnDefinition Width="51*"/>
+                    <!-- DataGrid -->
+                    <ColumnDefinition Width="31*" />
+                    <!-- Thông tin sản phẩm -->
+                </Grid.ColumnDefinitions>
+
+                <materialDesign:Card Grid.ColumnSpan="2">
+                    <!-- DataGrid hiển thị danh sách sản phẩm -->
+                    <DataGrid ItemsSource="{Binding ProductList}"
+                          SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,10,0"
+                          CanUserAddRows="False"
+                          SelectionMode="Single"
+                          Style="{StaticResource MaterialDesignDataGrid}"
+                          materialDesign:DataGridAssist.CellPadding="8"
+                          materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Tên Sản Phẩm" Binding="{Binding ProductName}" Width="2*" />
+                            <DataGridTextColumn Header="Số Lượng" Binding="{Binding Quantity}" Width="*" />
+                            <DataGridTextColumn Header="Đơn Vị" Binding="{Binding Unit}" Width="*" />
+                            <DataGridTextColumn Header="Giá Tiền" Binding="{Binding Price}" Width="1.3*" />
+                            <DataGridTextColumn Header="Ngày Nhập" Binding="{Binding Import, StringFormat=\{0:dd/MM/yyyy\}}" Width="1.5*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </materialDesign:Card>
+
+                <!-- Khu vực thông tin sản phẩm (cột phải) -->
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Thông Tin Sản Phẩm" 
+                               FontWeight="Bold"
+                               FontSize="15" 
+                               Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Tên Sản Phẩm:" Width="100" VerticalAlignment="Center" FontSize="15"/>
+                        <TextBox Width="250"
+                                 FontSize="15"
+                                 Name="txtProductName"
+                                 Style="{StaticResource MaterialDesignTextBox}"
+                                 Text="{Binding SelectedProduct.ProductName, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Số Lượng:" Width="100" VerticalAlignment="Center" FontSize="15"/>
+                        <materialDesign:NumericUpDown Width="120"
+                                                      FontSize="15"
+                                                      Name="numQuantity"
+                                                      Value="{Binding SelectedProduct.Quantity, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Đơn Vị:" Width="100" VerticalAlignment="Center" FontSize="15"/>
+                        <TextBox Width="120"
+                                 FontSize="15"
+                                 Name="txtUnit"
+                                 Style="{StaticResource MaterialDesignTextBox}"
+                                 Text="{Binding SelectedProduct.Unit, Mode=TwoWay}">
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Giá Tiền:" Width="100" VerticalAlignment="Center" FontSize="15"/>
+                        <xctk:DoubleUpDown Name="numPrice"
+                                           Width="100"
+                                           FontSize="15"
+                                           Increment="1000"
+                                           Value="{Binding SelectedProduct.Price, Mode=TwoWay}"
+                                           ShowButtonSpinner="True"
+                                           TextAlignment="Left"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Ngày Nhập:" Width="100" VerticalAlignment="Center" FontSize="15"/>
+                        <DatePicker Width="140"
+                                    FontSize="15"
+                                    Name="dpImport"
+                                    SelectedDate="{Binding SelectedProduct.Import, Mode=TwoWay}"
+                                    Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                    </StackPanel>
+                    <Button Name="btnImport"
+                            Content="Nhập Hàng"
+                            Width="Auto"
+                            Margin="0,10,0,0"
+                            Click="btnImport_Click"/>
+                </StackPanel>
+                <TextBlock Name="tbID" Text="{Binding SelectedProduct.Id}" Visibility="Hidden" Grid.ColumnSpan="2"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
