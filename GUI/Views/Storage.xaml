@@ -4,6 +4,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Quản Lý Kho" Height="700" Width="1200"
+        Icon="/Icon/milk-tea.ico"
         WindowStartupLocation="CenterScreen">
 
     <!-- Định nghĩa theme Material -->
@@ -13,6 +14,13 @@
         <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}"/>
         <Style TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignOutlinedDatePicker}"/>
     </Window.Resources>
+
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F0EAD6" Offset="1"/>
+            <GradientStop Color="#FCA85C" Offset="0"/>
+        </LinearGradientBrush>
+    </Window.Background>
 
     <Grid>
         <!-- 2 cột chính: cột trái cho menu, cột phải cho nội dung -->
@@ -24,8 +32,8 @@
         </Grid.ColumnDefinitions>
 
         <!-- Panel bên trái (Menu) -->
-        <Border Background="{DynamicResource MaterialDesignPaper}" Padding="10">
-            <Grid Grid.Column="0" Background="#EEE">
+        <Border Background="#FCA85C" Padding="10">
+            <Grid Grid.Column="0" Background="#FCA85C">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <!-- Nút chức năng -->
@@ -38,9 +46,10 @@
                 <!-- Vùng chức năng -->
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="CHỨC NĂNG" FontWeight="Bold" Margin="0,0,0,20"/>
-                    <Button Content="Sửa Thông Tin Sản Phẩm" Click="EditProductButton_Click" Margin="0,0,0,15"/>
-                    <Button Content="Xóa Sản Phẩm" Click="DeleteProductButton_Click" Margin="0,0,0,15"/>
-                    <Button Content="Lịch Sử Nhập Hàng" Click="HistoryButton_Click" Margin="0,0,0,15"/>
+                    <Button Name="btnEdit" Content="Sửa Thông Tin Sản Phẩm" Click="EditProductButton_Click" Margin="0,0,0,15"/>
+                    <Button Name="btnDelete" Content="Xóa Sản Phẩm" Click="DeleteProductButton_Click" Margin="0,0,0,15"/>
+                    <Button Name="btnHistory" Content="Lịch Sử Nhập Hàng" Click="HistoryButton_Click" Margin="0,0,0,15"/>
+                    <Button Content="Làm mới danh sách" Click="RefreshButton_Click"  Margin="0,0,0,15"/>
                 </StackPanel>
 
                 <!-- Khu vực Tổng tiền -->
@@ -53,6 +62,7 @@
                     <TextBox Width="200"
                              TextAlignment="Center"
                              FontSize="17"
+                             Foreground="#511612"
                              FontWeight="Bold"
                              Style="{StaticResource MaterialDesignFilledTextBox}"
                              IsReadOnly="True"
@@ -97,7 +107,7 @@
                           ScrollViewer.CanContentScroll="True" 
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           Margin="0,0,10,0"
-                          CanUserAddRows="False"
+                          CanUserAddRows="True"
                           SelectionMode="Single"
                           Style="{StaticResource MaterialDesignDataGrid}"
                           materialDesign:DataGridAssist.CellPadding="8"

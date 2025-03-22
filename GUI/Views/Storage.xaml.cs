@@ -28,6 +28,12 @@ namespace GUI.Views
             InitializeComponent();
             this.account = account;
             LoadData();
+            UserAuthorization();
+        }
+
+        private void UserAuthorization()
+        {
+            btnEdit.IsEnabled = btnDelete.IsEnabled = btnHistory.IsEnabled = account.Auth == "ADMIN";
         }
 
         private void LoadData()
@@ -74,6 +80,11 @@ namespace GUI.Views
             var userid = account.Username;
             DataProvider.Instance.ExecuteNonQuery("SP_AddProduct @NAME, @CNT, @UNIT, @PRICE, @TIME, @USERID", new object[] { productname, quantity, unit, price, DateTime.Now, userid });
             MessageBox.Show("Nhập hàng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoadData();
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
             LoadData();
         }
     }

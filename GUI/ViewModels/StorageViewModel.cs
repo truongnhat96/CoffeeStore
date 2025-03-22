@@ -36,15 +36,10 @@ namespace GUI.ViewModels
 
         public StorageViewModel()
         {
-            // Khởi tạo danh sách sản phẩm (demo)
             ProductList = new ObservableCollection<ProductModel>();
 
             LoadProducts();
 
-            // Gán SelectedProduct mặc định
-            SelectedProduct = ProductList.Count > 0 ? ProductList[0] : null;
-
-            // Tính tổng tiền ban đầu
             CalculateTotal();
         }
 

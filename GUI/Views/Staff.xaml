@@ -3,13 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Background="{DynamicResource MaterialDesignPaper}"
         Title="Quản lý nhân viên" Height="640" Width="1100">
     <!-- Kích hoạt hiệu ứng Material Design cho cửa sổ -->
-    <Window.Style>
-        <Style TargetType="Window">
-            <Setter Property="materialDesign:ColorZoneAssist.Mode" Value="PrimaryDark" />
-        </Style>
-    </Window.Style>
 
     <Grid Margin="16">
         <Grid.ColumnDefinitions>
@@ -82,6 +78,7 @@
                         Click="btnSearch_Click"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        IsDefault="True"
                         Margin="0,0,4,0">
                     <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="Black"/>
                 </Button>

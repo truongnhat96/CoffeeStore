@@ -3,13 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Quản lý đồ uống" Height="600" Width="700">
+        Background="{DynamicResource MaterialDesignPaper}"
+        Title="Quản lý danh mục" Height="600" Width="700">
     <!-- Kích hoạt hiệu ứng Material Design cho cửa sổ -->
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="materialDesign:ColorZoneAssist.Mode" Value="PrimaryDark" />
         </Style>
     </Window.Style>
+
 
     <Grid Margin="16">
         <Grid.ColumnDefinitions>
@@ -77,6 +79,7 @@
                         Name="btnSearch"
                         Click="btnSearch_Click"
                         HorizontalAlignment="Right"
+                        IsDefault="True"
                         VerticalAlignment="Center"
                         Margin="0,0,4,0">
                     <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="Black"/>
@@ -97,7 +100,7 @@
                          Style="{StaticResource MaterialDesignOutlinedTextBox}" 
                          Text="{Binding SelectedCategory.Name, Mode=TwoWay}" />
 
-                
+
             </StackPanel>
 
             <!-- CHÚ Ý -->

@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Quản lý đồ uống" Height="700" Width="650">
+        Background="{DynamicResource MaterialDesignPaper}"
+        Title="Quản lý bàn" Height="700" Width="650">
     <!-- Kích hoạt hiệu ứng Material Design cho cửa sổ -->
     <Window.Style>
         <Style TargetType="Window">
@@ -79,6 +80,7 @@
                         Click="btnSearch_Click"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        IsDefault="True"
                         Margin="0,0,4,0">
                     <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="Black"/>
                 </Button>

@@ -42,11 +42,17 @@ namespace GUI.Views
         {
             string username = txtUsername.Text;
             string displayname = txtDisplayName.Text;
-            var defaultPassword = "Cafe" + new Random().Next(1111, 9999).ToString();
-            string passwordHash = PasswordHasher.Hash(defaultPassword);
             string accounttype = cbAuth.SelectedItem.ToString();
+            var defaultPassword = accounttype + "@" + new Random().Next(1111, 99999).ToString();
+            string passwordHash = PasswordHasher.Hash(defaultPassword);
             DateTime birth = dpBirth.SelectedDate.Value;
             string email = txtEmail.Text;
+            var checkemailexist = DataProvider.Instance.ExecuteScalar($"SELECT COUNT(*) FROM ACCOUNT WHERE Email = @EMAIL", new object[] {email});
+            if (checkemailexist != null && (int)checkemailexist > 0)
+            {
+                MessageBox.Show("Email đã tồn tại trong hệ thống", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             DataProvider.Instance.ExecuteNonQuery("EXECUTE SP_AddAccount @USERNAME, @DISPLAYNAME, @ACCOUNTTYPE, @BIRTH, @EMAIL, @PASSWORD", new object[] { username, displayname, accounttype, birth, email, passwordHash });
             MessageBox.Show($"Tạo tài khoản thành công! Mật khẩu của bạn là {defaultPassword}\nVui lòng đăng nhập và đặt lại mật khẩu mới", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadData();
@@ -78,6 +84,12 @@ namespace GUI.Views
             string accounttype = cbAuth.SelectedItem.ToString();
             DateTime birth = dpBirth.SelectedDate.Value;
             string email = txtEmail.Text;
+            var checkemailexist = DataProvider.Instance.ExecuteScalar($"SELECT COUNT(*) FROM ACCOUNT WHERE Email = @EMAIL", new object[] { email });
+            if (checkemailexist != null && (int)checkemailexist > 0)
+            {
+                MessageBox.Show("Email đã tồn tại trong hệ thống", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             DateTime begin = dpBeginWork.SelectedDate.Value;
             DataProvider.Instance.ExecuteNonQuery("UPDATE ACCOUNT SET Username = @USERNAME, Displayname = @DISPLAYNAME, AccountType = @ACCOUNTTYPE, DateOfBirth = @DATE, Email = @EMAIL, WorkBegin = @BEGIN WHERE Username = @CURUSERNAME", new object[] { username, displayname, accounttype, birth, email, begin, currentUsername });
             MessageBox.Show("Cập nhật thông tin tài khoản thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);

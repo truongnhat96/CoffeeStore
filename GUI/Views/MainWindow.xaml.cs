@@ -1,21 +1,11 @@
 ﻿using Database;
 using GUI.Security;
 using MaterialDesignThemes.Wpf;
+using Notifications.Wpf;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GUI.Views
 {
@@ -24,6 +14,7 @@ namespace GUI.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly NotificationManager _notificationManager = new NotificationManager();
         public MainWindow()
         {
             InitializeComponent();
@@ -33,22 +24,36 @@ namespace GUI.Views
         {
             if(string.IsNullOrEmpty(txtUsername.Text) || string.IsNullOrEmpty(pwdBox.Password))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
             DataTable data = DataProvider.Instance.ExecuteQuery(@"SELECT * FROM ACCOUNT WHERE Username = @Username", new object[] { txtUsername.Text });
-            var passwordHash = data.Rows[0]["Password"].ToString();
-            if (data.Rows.Count > 0 && PasswordHasher.VerifyPassword(pwdBox.Password, passwordHash))
+            if (data.Rows.Count > 0)
             {
-                Home home = new Home(new Models.AccountModel(data.Rows[0], true));
-                home.ResetInfor += RefreshInforLogin;
-                this.Hide();
-                home.ShowDialog();
-                this.Show();
+                var passwordHash = data.Rows[0]["Password"].ToString();
+                if (PasswordHasher.VerifyPassword(pwdBox.Password, passwordHash))
+                {
+                    Home home = new Home(new Models.AccountModel(data.Rows[0], true));
+                    home.ResetInfor += RefreshInforLogin;
+                    _notificationManager.Show(new NotificationContent
+                    {
+                        Title = "Đăng nhập thành công",
+                        Message = "Chào mừng bạn đến với hệ thống quản lý cửa hàng",
+                        Type = NotificationType.Success
+                    }, expirationTime: TimeSpan.FromSeconds(5));
+                    this.Hide();
+                    home.ShowDialog();
+                    this.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Mật khẩu không chính xác", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Tài khoản hoặc mật khẩu không chính xác", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Tài khoản không tồn tại?\nVui lòng báo với quản trị viên để được cấp tài khoản mới", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

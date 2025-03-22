@@ -3,8 +3,10 @@ using GUI.MailHelper;
 using GUI.Models;
 using GUI.Security;
 using MaterialDesignThemes.Wpf;
+using Notifications.Wpf;
 using System;
 using System.Data;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,6 +17,7 @@ namespace GUI.Views
     /// </summary>
     public partial class PasswordChange : Window
     {
+        private readonly NotificationManager _notificationManager = new NotificationManager();
         private AccountModel account;
         private int verificationCode = new Random().Next(121212, 989898);
         public PasswordChange(AccountModel account)
@@ -62,9 +65,7 @@ namespace GUI.Views
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // Kiểm tra các ô nhập liệu không được để trống
-            if (string.IsNullOrEmpty(pwdCurrent.Password) ||
-                string.IsNullOrEmpty(pwdNew.Password) ||
-                string.IsNullOrEmpty(pwdConfirm.Password) ||
+            if (((string.IsNullOrEmpty(pwdCurrent.Password) || string.IsNullOrEmpty(pwdNew.Password) || string.IsNullOrEmpty(pwdConfirm.Password)) && (string.IsNullOrEmpty(txtCurrentVisible.Text) || string.IsNullOrEmpty(txtNewVisible.Text) || string.IsNullOrEmpty(txtConfirmVisible.Text))) ||
                 string.IsNullOrEmpty(txtVerificationCode.Text))
             {
                 MessageBox.Show("Vui lòng điền đầy đủ thông tin.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -79,9 +80,16 @@ namespace GUI.Views
                 return;
             }
             // Kiểm tra mật khẩu mới và xác nhận có khớp nhau hay không
-            if (pwdNew.Password != pwdConfirm.Password)
+            if ((pwdNew.Password != pwdConfirm.Password) && (txtConfirmVisible.Text != txtNewVisible.Text))
             {
                 MessageBox.Show("Mật khẩu mới và xác nhận mật khẩu không khớp.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            string pass = !string.IsNullOrEmpty(txtNewVisible.Text) ? txtNewVisible.Text : pwdNew.Password;
+            if (InputPasswordRequired(pass) == false)
+            {
+                MessageBox.Show("Mật khẩu mới không đủ mạnh.\nMật khẩu phải chứa ít nhất 6 ký tự, 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -104,17 +112,53 @@ namespace GUI.Views
         private void btnGetVerificationCode_Click(object sender, RoutedEventArgs e)
         {
             btnGetVerificationCode.IsEnabled = false;
+            if(account.Email.Contains("@gmail.com") == false)
+            {
+                MessageBox.Show("Email đăng ký không hợp lệ hoặc không được hỗ trợ", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                btnGetVerificationCode.IsEnabled = true;
+                return;
+            }
             try
             {
                 var mail = new MailSender();
                 mail.Send(account.Email, "MÃ XÁC THỰC EMAIL ĐỔI MẬT KHẨU", HtmlHelper.ContentConfirm(verificationCode.ToString()));
                 MessageBox.Show("Mã xác nhận đã được gửi đến hòm thư của bạn.\nVui lòng kiểm tra!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show("Có lỗi xảy ra khi gửi mã xác nhận.\n" + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationManager.Show(new NotificationContent
+                {
+                    Title = "Thông báo",
+                    Message = "Có lỗi khi gửi Email\nVui lòng kiểm tra kết nối internet và thử lại",
+                    Type = NotificationType.Error
+                }, expirationTime: TimeSpan.FromSeconds(10));
                 btnGetVerificationCode.IsEnabled = true;
             }
+        }
+
+        private bool InputPasswordRequired(string password)
+        {
+            if(password.Length < 6)
+            {
+                return false;
+            }
+            if(!password.Any(char.IsUpper))
+            {
+                return false;
+            }
+            if (!password.Any(char.IsLower))
+            {
+                return false;
+            }
+            if (!password.Any(char.IsDigit))
+            {
+                return false;
+            }
+            if (!password.Contains('@'))
+            {
+                return false;
+            }
+            return true;
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)

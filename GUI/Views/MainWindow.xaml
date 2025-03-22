@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:GUI.Views"
+        Icon="/Icon/milk-tea.ico"
         mc:Ignorable="d"
         Title="Đăng Nhập"
         Height="450"
@@ -30,7 +31,7 @@
                     <TextBlock Text="ĐĂNG NHẬP" Margin="20" Foreground="White" TextAlignment="Center" FontSize="38" FontFamily="Great Vibes"></TextBlock>
                     <StackPanel Orientation="Horizontal" Margin="10">
                         <materialDesign:PackIcon Kind="User" Width="25" Height="25" Foreground="White"/>
-                        <TextBox FontSize="15" x:Name="txtUsername" Margin="10 0" materialDesign:HintAssist.Hint="Enter Username" Foreground="White" Width="250" BorderBrush="White" CaretBrush="#FFD94448" SelectionBrush="#FFD94448" />
+                        <TextBox FontSize="15" x:Name="txtUsername" Margin="10 0" materialDesign:HintAssist.Hint="Enter Username" Foreground="White" Width="203" BorderBrush="White" CaretBrush="#FFD94448" SelectionBrush="#FFD94448" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="10">
                         <materialDesign:PackIcon Kind="Lock" Width="25" Height="25" Foreground="White"/>
@@ -52,6 +53,7 @@
                                      Text="{Binding ElementName=pwdBox, Path=Password, Mode=OneWay}"
                                      Foreground="White"
                                      FontSize="15"
+                                     Width="250"
                                      BorderBrush="White"
                                      Visibility="Collapsed"/>
                             <!-- ToggleButton cho chức năng ẩn/hiện mật khẩu -->

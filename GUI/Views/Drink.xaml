@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Quản lý đồ uống" Height="680" Width="900">
+        Background="{DynamicResource MaterialDesignPaper}"
+        Title="Quản lý đồ uống" Height="700" Width="900">
     <!-- Kích hoạt hiệu ứng Material Design cho cửa sổ -->
     <Window.Style>
         <Style TargetType="Window">
@@ -50,7 +51,7 @@
                           Name="dtgDrinks"
                           SelectionMode="Single"
                           CanUserAddRows="False"
-                          MaxHeight="580"
+                          MaxHeight="590"
                           ScrollViewer.CanContentScroll="True" 
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           IsReadOnly="True"
@@ -81,6 +82,7 @@
                         Click="btnSearch_Click"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        IsDefault="True"
                         Margin="0,0,4,0">
                     <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Foreground="Black"/>
                 </Button>
@@ -119,8 +121,14 @@
 
                 <TextBlock Text="Hình ảnh (url)" Margin="0,8,0,0"
                            Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <Image x:Name="imgDrink"
+                       Stretch="UniformToFill"
+                       Source="{Binding SelectedDrink.ImagePath, Mode=TwoWay}"
+                       Height="100" Width="100"/>
                 <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
                          Name="txtImageUrl"
+                         Height="5"
+                         Visibility="Hidden"
                          Text="{Binding SelectedDrink.ImagePath, Mode=TwoWay}"/>
                 <Button Content="Upload ảnh"
                         x:Name="btnUploadImage"

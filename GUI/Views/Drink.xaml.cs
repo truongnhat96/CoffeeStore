@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace GUI.Views
 {
@@ -56,6 +57,8 @@ namespace GUI.Views
 
                     // Copy ảnh vào thư mục ứng dụng
                     File.Copy(openFileDialog.FileName, destFilePath, true);
+
+                    imgDrink.Source = new BitmapImage(new Uri(destFilePath));
 
                     txtImageUrl.Text = Path.Combine("Images", "Uploads", fileName);
 

@@ -58,8 +58,6 @@ namespace GUI.ViewModels
                     {
                         SelectedDrink.CategoryID = _selectedCategory.Id;
                         SelectedDrink.CategoryName = _selectedCategory.Name;
-                        // Nếu DrinkModel cũng implements INotifyPropertyChanged thì các binding sẽ tự động update
-                        OnPropertyChanged(nameof(SelectedDrink));
                     }
                 }
             }
@@ -102,7 +100,6 @@ namespace GUI.ViewModels
             {
                 Drinks.Add(new DrinkModel(row));
             }
-            SelectedDrink = Drinks.Count > 0 ? Drinks[0] : null;
         }
 
         private void LoadCategory()
@@ -129,7 +126,6 @@ namespace GUI.ViewModels
             {
                 Drinks.Add(new DrinkModel(row));
             }
-            SelectedDrink = Drinks.Count > 0 ? Drinks[0] : null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

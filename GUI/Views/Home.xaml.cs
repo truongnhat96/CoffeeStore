@@ -1,6 +1,7 @@
 ﻿using Database;
 using GUI.Models;
 using GUI.ViewModels;
+using Notifications.Wpf;
 using System;
 using System.Windows;
 using System.Windows.Data;
@@ -13,6 +14,7 @@ namespace GUI.Views
     /// </summary>
     public partial class Home : Window
     {
+        private readonly NotificationManager _notificationManager = new NotificationManager();
         private Action _resetInfor;
         private AccountModel account;
         public string DisplayName { get; set; }
@@ -99,6 +101,12 @@ namespace GUI.Views
             if (MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Thông báo", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 ResetInfor.Invoke();
+                _notificationManager.Show(new NotificationContent
+                {
+                    Title = "Đăng xuất thành công",
+                    Message = "Hẹn gặp lại!",
+                    Type = NotificationType.Information
+                }, expirationTime: TimeSpan.FromSeconds(5));
                 this.Close();
             }
         }
@@ -335,6 +343,11 @@ namespace GUI.Views
         private void LoadNameAfterUpdate(string displayname)
         {
             txtDisplayName.Text = account.Displayname = displayname;
+            var query = DataProvider.Instance.ExecuteQuery("SELECT * FROM ACCOUNT WHERE Username = @Username", new object[] { account.Username });
+            if (query.Rows.Count > 0)
+            {
+                account.Email = query.Rows[0]["Email"].ToString();
+            }
         }
 
         private void Infor_Click(object sender, RoutedEventArgs e)

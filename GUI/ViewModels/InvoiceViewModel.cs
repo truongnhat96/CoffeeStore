@@ -78,7 +78,6 @@ namespace GUI.ViewModels
             SelectPageCommand = new RelayCommand(OnSelectPage);
             SearchCommand = new RelayCommand(OnSearch);
 
-            // Load dữ liệu ban đầu
             OnSearch(null);
         }
 

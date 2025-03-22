@@ -7,11 +7,11 @@
         xmlns:vm="clr-namespace:GUI.ViewModels"
         Title="Coffee Shop"
         Height="700" Width="1270"
-        Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontFamily="pack://application:,,,/MaterialDesignThemes.WPF;component/Resources/Roboto/#Roboto"
         TextElement.FontSize="14"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
+        Icon="/Icon/milk-tea.ico"
         WindowStyle="None"
         materialDesign:ColorZoneAssist.Mode="PrimaryLight">
 
@@ -19,7 +19,14 @@
         <vm:HomeViewModel/>
     </Window.DataContext>
 
-    
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F0EAD6" Offset="0"/>
+            <GradientStop Color="#A8703D" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+
+
     <Grid MouseDown="Grid_MouseDown">
         <!-- 2 hàng: Hàng trên (Auto) cho thanh menu + chào + logo, hàng dưới (*) cho nội dung -->
         <Grid.RowDefinitions>
@@ -56,7 +63,7 @@
                   VerticalAlignment="Top">
                 <MenuItem Name="Manager" Header="_Quản lý">
                     <MenuItem Name="Staff" Header="_Nhân viên" Click="Staff_Click" />
-                    <MenuItem Name="DetailBill" Header="Chi tiết hóa đơn" Click="DetailBill_Click"/>
+                    <MenuItem Name="DetailBill" Header="Hóa đơn" Click="DetailBill_Click"/>
                     <MenuItem Header="Doanh thu" Click="Income_Click"/>
                     <MenuItem Name="Table" Header="Bàn" Click="Table_Click" />
                     <MenuItem Name="Drink" Header="Đồ uống" Click="Drink_Click"/>
@@ -71,7 +78,7 @@
                 <MenuItem Name="Storage" Header="_Kho hàng" Click="Storage_Click"/>
             </Menu>
 
-            <!-- Logo bên phải (nếu có) -->
+            <!-- Logo -->
             <Image Source="/Images/the-cozy-cup-hot-beverages-cafe-logo-design.jpg"
                    Width="80" Height="80"
                    VerticalAlignment="Center"

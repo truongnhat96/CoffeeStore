@@ -57,8 +57,6 @@ namespace GUI.ViewModels
                     if (SelectedAccount != null && !string.IsNullOrEmpty(_selectedAuth))
                     {
                         SelectedAccount.Auth = _selectedAuth;
-                        // Nếu DrinkModel cũng implements INotifyPropertyChanged thì các binding sẽ tự động update
-                        OnPropertyChanged(nameof(SelectedAccount));
                     }
                 }
             }
@@ -96,7 +94,6 @@ namespace GUI.ViewModels
             {
                 Accounts.Add(new AccountModel(row, false));
             }
-            SelectedAccount = Accounts.Count > 0 ? Accounts[0] : null;
         }
 
         private void LoadAuth()
@@ -114,7 +111,6 @@ namespace GUI.ViewModels
             {
                 Accounts.Add(new AccountModel(row, false));
             }
-            SelectedAccount = Accounts.Count > 0 ? Accounts[0] : null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
